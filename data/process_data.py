@@ -12,18 +12,46 @@ def load_data(messages_filepath, categories_filepath):
     OUTPUT:
     df - a joined dataframe containg messages and categories
     '''
-    #Load Datasets
+    # Load Datasets
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     
-    #Merge Datasets
+    # Merge Datasets
     df = messages.merge(categories, on='id')
 
     return df
 
 def clean_data(df):
-    pass
+    '''
+    INPUT:
+    df - merged dataset of messages and categories
+        
+    OUTPUT:
+    df - cleaned data
+    '''
+    # Creating a dataframe of the 36 individual category columns
+    categories = df['categories'].str.split(';', expand=True)
+    
+    # Selecting the first row of the categories DataFrame, extracting the names of the categories and renaming the columns of the categories DataFrame
+    row = categories.iloc[0,:]
+    category_colnames = row.apply(lambda x: x[:-2])
+    categories.columns = category_colnames
 
+    # Converting the category values to just numbers 0 or 1
+    for column in categories:
+        categories[column] = categories[column].apply(lambda x : x[-1])
+        categories[column] = categories[column].astype(int)
+        
+    # Dropping the original uncleaned categories column from the DataFrame df
+    df.drop('categories', axis=1, inplace=True)
+    
+    # Concatenating the original DataFrame with the new categories DataFrame
+    df = pd.concat([df,categories], axis=1)
+    
+    # Droping duplicates
+    df.drop_duplicates(inplace=True)
+    
+    return df
 
 def save_data(df, database_filename):
     pass  
