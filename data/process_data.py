@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
     '''
+    Loads the messages and categories datasets from the specified filepaths
+    
     INPUT:
     messages_filepath - path to csv file containing messages
     categories_filepath - path to csv file containing categories
@@ -23,6 +25,8 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     '''
+    Cleans the merged dataset
+    
     INPUT:
     df - merged dataset of messages and categories
         
@@ -34,7 +38,7 @@ def clean_data(df):
     
     # Selecting the first row of the categories DataFrame, extracting the names of the categories and renaming the columns of the categories DataFrame
     row = categories.iloc[0,:]
-    category_colnames = row.apply(lambda x: x[:-2])
+    category_colnames = row.apply(lambda x: x[:-2].capitalize())
     categories.columns = category_colnames
 
     # Converting the category values to just numbers 0 or 1
@@ -54,8 +58,14 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
-    pass  
-
+     """
+    Load the data from Dataframe to the saves it in a sqlite Database
+    Inputs:
+        df: dataframe
+        database_filename: database saving path
+    """
+    engine = create_engine('sqlite:///'+database_filename)
+    df.to_sql('disaster_messages', engine, index=False)
 
 def main():
     if len(sys.argv) == 4:
