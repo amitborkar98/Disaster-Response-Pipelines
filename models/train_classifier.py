@@ -1,12 +1,46 @@
 import sys
+import pandas as pd
+import numpy as np
+import nltk
+import re
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+from sqlalchemy import create_engine
+import pickle
+
+nltk.download(['punkt', 'wordnet','stopwords'])
+
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.metrics import classification_report,accuracy_score, precision_score, recall_score, f1_score, make_scorer
+from sklearn.model_selection import GridSearchCV
 
 
 def load_data(database_filepath):
-    pass
+    
+    # Load data from database
+    engine = create_engine('sqlite:///' + database_filepath)
+    df = pd.read_sql("SELECT * FROM disaster_messages", engine)
+    
+    # Create X and Y datasets
+    X = df['message']
+    Y = df.drop(['id', 'message', 'original', 'genre'], axis = 1)
+    
+    # Create list containing all category names
+    category_names = list(Y.columns.values)
+    
+    return X, Y, category_names        
 
 
 def tokenize(text):
-    pass
+    
+    
 
 
 def build_model():
