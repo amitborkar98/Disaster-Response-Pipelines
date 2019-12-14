@@ -63,9 +63,23 @@ def tokenize(text):
     
     
 def build_model():
-    pass
+    
+    # Create pipeline
+    pipeline = Pipeline([
+        ('vect', CountVectorizer(tokenizer = tokenize)),
+        ('tfidf', TfidfTransformer()),
+        ('clf', MultiOutputClassifier(AdaBoostClassifier()))
+        ])
+    
+    # Create parameters dictionary
+    parameters = {  'vect__min_df': [1, 5],
+                'tfidf__use_idf':[True, False],
+                'clf__estimator__n_estimators': [50,100,150]}
+    
+    cv = GridSearchCV(pipeline, param_grid=parameters)
+    return cv
 
-
+    
 def evaluate_model(model, X_test, Y_test, category_names):
     pass
 
