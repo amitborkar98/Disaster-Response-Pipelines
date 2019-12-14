@@ -73,16 +73,28 @@ def build_model():
     
     # Create parameters dictionary
     parameters = {  'vect__min_df': [1, 5],
-                'tfidf__use_idf':[True, False],
-                'clf__estimator__n_estimators': [50,100,150]}
+                    'tfidf__use_idf':[True, False],
+                    'clf__estimator__n_estimators': [50,100,150]}
     
+    # Create grid search object
     cv = GridSearchCV(pipeline, param_grid=parameters)
     return cv
 
     
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
-
+    
+    # Predict on test set 
+    Y_pred = model.predict(X_test)
+    # Calculate the overall accuracy of the model
+    Overall_acc = (Y_pred == Y_test).mean().mean()
+    print('Overall accuracy {0:.2f}% \n'.format(Overall_acc*100))
+        
+    #Create classifiaction report for each column    
+    Y_pred_DF = pd.DataFrame(Y_pred, columns = Y_test.columns)
+    for column in Y_test.columns:
+        print('****     *****     ***** \n')
+        print('Feature Name: {}\n'.format(column))
+        print(classification_report(Y_test[column],Y_pred_DF[column]))
 
 def save_model(model, model_filepath):
     pass
