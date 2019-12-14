@@ -23,7 +23,15 @@ from sklearn.model_selection import GridSearchCV
 
 
 def load_data(database_filepath):
-    
+    '''
+    Load data from the database
+    Input:
+        (File Path) database_filepath: File path of sql database
+    Output:
+        (DataFrame)X: Message (features)
+        (DataFrame)Y: Categories (target)
+        (List)category_names: Labels for 36 categories
+    '''
     # Load data from database
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql("SELECT * FROM disaster_messages", engine)
@@ -39,7 +47,13 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-    
+    """
+    Tokenize the input text and return a cleaned token after lemmatization, stop-word removal, punctuation removal
+    Inputs:
+        (User Input) text: text input
+    Outputs:
+        (List) cleaned_tokens: list of cleaned tokens
+    """
     #coverting into lower text
     text = text.lower() 
     
@@ -63,7 +77,12 @@ def tokenize(text):
     
     
 def build_model():
-    
+    '''
+    Build a ML pipeline using Count Vectorizer, TF-IDF, AdaBoost Classifier and GridSearchCV
+    Input: None
+    Output:
+        Result of GridSearchCV
+    '''
     # Create pipeline
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer = tokenize)),
@@ -82,7 +101,15 @@ def build_model():
 
     
 def evaluate_model(model, X_test, Y_test, category_names):
-    
+    """
+    Output precision, recall, fscore for all the categories for test set
+    Inputs:
+        model: a trained model
+        X_test: features of test set
+        Y_test: target values of test set
+        category_names: Labels for 36 categories
+    Outputs: None
+    """
     # Predict on test set 
     Y_pred = model.predict(X_test)
     # Calculate the overall accuracy of the model
@@ -98,7 +125,15 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
         
 def save_model(model, model_filepath):
-    
+    '''
+    Save model as a pickle file 
+    Input: 
+        model: Model to be saved
+        model_filepath: path of the output pick file
+    Output:
+        A pickle file of saved model
+    '''
+    #save the model as pickle file
     pickle.dump(model, open(model_filepath, "wb"))
 
 
