@@ -96,8 +96,10 @@ def evaluate_model(model, X_test, Y_test, category_names):
         print('Feature Name: {}\n'.format(column))
         print(classification_report(Y_test[column],Y_pred_DF[column]))
 
+        
 def save_model(model, model_filepath):
-    pass
+    
+    pickle.dump(model, open(model_filepath, "wb"))
 
 
 def main():
