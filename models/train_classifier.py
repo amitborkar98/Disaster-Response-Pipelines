@@ -16,7 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.ensemble import  AdaBoostClassifier 
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.metrics import classification_report,accuracy_score, precision_score, recall_score, f1_score, make_scorer
 from sklearn.model_selection import GridSearchCV
@@ -91,9 +91,7 @@ def build_model():
         ])
     
     # Create parameters dictionary
-    parameters = {  'vect__min_df': [1, 5],
-                    'tfidf__use_idf':[True, False],
-                    'clf__estimator__n_estimators': [50,100,150]}
+    parameters = { 'clf__estimator__n_estimators' : [50,100,150] }
     
     # Create grid search object
     cv = GridSearchCV(pipeline, param_grid=parameters)
